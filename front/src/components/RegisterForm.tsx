@@ -27,10 +27,12 @@ function RegisterForm() {
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const navigate = useNavigate();
+    const apiUri = import.meta.env.VITE_API_URI;
+    console.log(apiUri);
 
     const onSubmit = async (data: FormData) => {
         try {
-            const response = await axios.post("http://localhost:5000/api/v1/auth", data);
+            const response = await axios.post(`${apiUri}/auth/register`, data);
             console.log("User registered successfully", response.data);
 
             // Redirect to home page with the success message
