@@ -26,15 +26,17 @@ function LoginForm() {
     const onSubmit = async (data: LoginData) => {
         try {
             const response = await axios.post(`${apiUri}/auth/login`, data, {
-                withCredentials: true, // Pour les cookies
+                withCredentials: true,
             });
             console.log("User logged in successfully", response.data);
 
-            // Redirection page d'accueil
-            navigate("/home");
+            // Redirection vers la page d'accueil après la connexion réussie
+            navigate("/home", { state: { successMessage: "Connexion réussie ! Bienvenue à Gamerz." } });
         } catch (error) {
             console.error("Error during login:", error);
-            setErrorMessage("Email ou mot de passe incorrect.");
+
+            const apiErrorMessage = "Une erreur est survenue. Veuillez réessayer.";
+            setErrorMessage(apiErrorMessage);
         }
     };
 
