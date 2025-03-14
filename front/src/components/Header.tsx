@@ -13,6 +13,7 @@ function Header() {
                 <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
                     <div className="navbar-nav">
                         <NavLink to="/register" className="nav-link">Inscription</NavLink>
+                        <NavLink to="/login" className="nav-link">Connexion</NavLink>
                         {/*<NavLink to="/brewery" className="nav-link">Les brasseries</NavLink>*/}
                     </div>
                 </div>
