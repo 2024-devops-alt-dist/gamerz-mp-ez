@@ -1,5 +1,5 @@
 body {
-  background-color: #d5d5d5;
+  background-color: #efeeee;
 }
 
 .card {
@@ -8,15 +8,16 @@ body {
 
 .active {
   text-decoration: underline;
-  text-decoration-color: #000000;
+  text-decoration-color: #ffffff;
 }
 
 nav {
-  background-color: #636191;
+  background-color: #252527;
+  color: white;
 }
 
 nav a {
-  color: black;
+  color: white;
   text-decoration: none;
 }
 
@@ -28,7 +29,8 @@ h1 {
 }
 
 .home-infos {
-  background-color: #7c7ab6;
+  background-color: #f6f6f8;
+  border: 1px solid #27273a;
   border-radius: 15px;
   padding: 25px;
   margin: auto;
