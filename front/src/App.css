@@ -21,7 +21,15 @@ nav a {
   text-decoration: none;
 }
 
-h1 {
+nav .nav-link:hover {
+  text-decoration: underline;
+}
+
+nav button span {
+  color: #7878da;
+}
+
+.register-container h1, .login-container h1 {
   font-size: 35px;
   font-weight: bold;
   margin-bottom: 30px;
