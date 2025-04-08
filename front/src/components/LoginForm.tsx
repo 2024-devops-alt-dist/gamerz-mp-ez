@@ -4,6 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import {useAuth} from "../contexts/AuthContext.tsx";
 
 // Définition du schéma Zod pour la validation
 const schema = z.object({
@@ -22,27 +23,44 @@ function LoginForm() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const navigate = useNavigate();
     const apiUri = import.meta.env.VITE_API_URI;
+    const { setUser } = useAuth();
 
     const onSubmit = async (data: LoginData) => {
         try {
             const response = await axios.post(`${apiUri}/auth/login`, data, {
                 withCredentials: true,
             });
+
+            // Ensuite, récupérer les infos de l'utilisateur connecté
+            const meResponse = await axios.get(`${apiUri}/auth/me`, {
+                withCredentials: true,
+            });
+
+            const userData = meResponse.data;
+
+            // Appeler setUser du AuthContext
+            setUser(userData);
+
             console.log("User logged in successfully", response.data);
 
-            // Redirection vers la page d'accueil après la connexion réussie
-            navigate("/home", { state: { successMessage: "Connexion réussie ! Bienvenue à Gamerz." } });
+            console.log("User logged in successfully", userData);
+
+            navigate("/home", {
+                state: {
+                    successMessage: "Connexion réussie ! Bienvenue à Gamerz.",
+                },
+            });
         } catch (error) {
             console.error("Error during login:", error);
-
             const apiErrorMessage = "Une erreur est survenue. Veuillez réessayer.";
             setErrorMessage(apiErrorMessage);
         }
     };
 
+
     return (
         <div className="col-md-4 col-12 mt-4 mb-5">
-            <h2 className="mb-3 text-center">Connexion</h2>
+            <h1 className="mb-3 text-center">Connexion</h1>
 
             {errorMessage && (
                 <div className="alert alert-danger">

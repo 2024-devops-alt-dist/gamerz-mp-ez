@@ -2,7 +2,7 @@ import RegisterForm from "../components/RegisterForm";
 
 function Register() {
     return (
-        <div className="container mt-5">
+        <div className="container mt-5 register-container">
             <div className="row home-infos">
                 <div className="col-12 text-center">
                     <h1 className="mb-4">🎮 Bienvenue sur Gamerz !</h1>

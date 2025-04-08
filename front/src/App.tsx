@@ -4,18 +4,22 @@ import Header from "./components/Header";
 import Register from "./pages/Register";
 import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import {AuthProvider} from "./contexts/AuthContext.tsx";
 
 function App() {
     return (
-        <Router>
-            <Header />
-            <Routes>
-                <Route path="/" element={<Navigate to="/register" replace />} /> {/* redirect "/" to "/register" automatically */}
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/home" element={<Home />} />
-            </Routes>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <Header />
+                <Routes>
+                    <Route path="/" element={<Navigate to="/register" replace />} /> {/* redirect "/" to "/register" automatically */}
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                </Routes>
+            </Router>
+        </AuthProvider>
     );
 }
 
