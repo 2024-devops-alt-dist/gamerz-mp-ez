@@ -36,7 +36,6 @@ export const authController = {
             res.status(400).json({ error: error instanceof Error ? error.message : "Invalid data" });
         }
     },
-
     login: async (req: Request, res: Response): Promise<void> => {
         const { email, password } = req.body;
 
@@ -77,5 +76,28 @@ export const authController = {
             console.error("Erreur de connexion :", error);
             res.status(500).json({ message: "Erreur serveur." });
         }
+    },
+    me: async (req: Request & { user?: any }, res: Response): Promise<void> => {
+        if (!req.user) {
+            res.status(401).json({ message: "Utilisateur non authentifié" });
+            return;
+        }
+
+        const { userId, username, email, role } = req.user;
+
+        if (!role) {
+            console.warn("Aucun rôle trouvé dans le token.");
+        }
+
+        res.status(200).json({ userId, username, email, roles: role });
+    },
+    logout: (req: Request, res: Response): void => {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        res.status(200).json({ message: "Déconnexion réussie." });
     }
 };
