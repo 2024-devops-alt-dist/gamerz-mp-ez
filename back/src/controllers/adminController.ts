@@ -62,5 +62,25 @@ export const adminController = {
         await user.save();
 
         res.json({ message: "Application rejected" });
+    },
+
+    async getGamerzUsers(req: Request, res: Response): Promise<void> {
+        const users = await User.find({ roles: "ROLE_GAMERZ" }).select("username email _id");
+        res.json(users);
+    },
+    
+    async banUser(req: Request, res: Response): Promise<void> {
+        const { userId } = req.params;
+    
+        const user = await User.findById(userId);
+        if (!user) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
+    
+        user.roles = ["ROLE_USER", "ROLE_REJECTED"];
+        await user.save();
+    
+        res.json({ message: "User banned successfully" });
     }
 };
