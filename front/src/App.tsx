@@ -6,6 +6,7 @@ import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import {AuthProvider} from "./contexts/AuthContext.tsx";
+import AdminApplications from "./pages/AdminApplications";
 
 function App() {
     return (
@@ -13,10 +14,16 @@ function App() {
             <Router>
                 <Header />
                 <Routes>
-                    <Route path="/" element={<Navigate to="/register" replace />} /> {/* redirect "/" to "/register" automatically */}
+                    <Route path="/" element={<Navigate to="/register" replace />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                    
+                    <Route path="/admin/applications" element={
+                        <ProtectedRoute requiredRole="ROLE_ADMIN">
+                            <AdminApplications />
+                        </ProtectedRoute>
+                    } />
                 </Routes>
             </Router>
         </AuthProvider>

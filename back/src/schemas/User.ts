@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const ApplicationSchema = new mongoose.Schema({
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
+    status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
 });
 
 const UserSchema = new mongoose.Schema({
