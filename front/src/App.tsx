@@ -18,7 +18,12 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                    <Route path="/admin/applications" element={<AdminApplications />} />
+                    
+                    <Route path="/admin/applications" element={
+                        <ProtectedRoute requiredRole="ROLE_ADMIN">
+                            <AdminApplications />
+                        </ProtectedRoute>
+                    } />
                 </Routes>
             </Router>
         </AuthProvider>

@@ -24,10 +24,11 @@ function AdminApplications() {
 
     const handleDecision = async (userId: string, action: "accept" | "reject") => {
         try {
-            await axios.put(`http://localhost:5000/api/v1/admin/applications/${userId}/${action}`, {}, {
-                withCredentials: true,
+            await axios.post(`http://localhost:5000/api/v1/admin/applications/${userId}/${action}`, {}, {
+                withCredentials: true
             });
-            fetchApplications(); // refresh list
+    
+            fetchApplications();
         } catch (error) {
             console.error(`Erreur lors de la ${action} de la candidature :`, error);
         }
