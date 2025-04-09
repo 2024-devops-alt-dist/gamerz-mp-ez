@@ -14,7 +14,7 @@ function App() {
             <Router>
                 <Header />
                 <Routes>
-                    <Route path="/" element={<Navigate to="/register" replace />} /> {/* redirect "/" to "/register" automatically */}
+                    <Route path="/" element={<Navigate to="/register" replace />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />

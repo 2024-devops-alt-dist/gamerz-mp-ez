@@ -3,6 +3,7 @@ import axios from "axios";
 
 type Application = {
     _id: string;
+    userId: string;
     username: string;
     email: string;
     content: string;
@@ -27,8 +28,7 @@ function AdminApplications() {
             await axios.post(`http://localhost:5000/api/v1/admin/applications/${userId}/${action}`, {}, {
                 withCredentials: true
             });
-    
-            fetchApplications();
+            fetchApplications(); // Rafraichi
         } catch (error) {
             console.error(`Erreur lors de la ${action} de la candidature :`, error);
         }
@@ -50,8 +50,8 @@ function AdminApplications() {
                             <strong>{app.username}</strong> ({app.email})<br />
                             <em>{app.content}</em>
                             <div className="mt-2">
-                                <button onClick={() => handleDecision(app._id, "accept")} className="btn btn-success btn-sm me-2">Accepter</button>
-                                <button onClick={() => handleDecision(app._id, "reject")} className="btn btn-danger btn-sm">Refuser</button>
+                                <button onClick={() => handleDecision(app.userId, "accept")} className="btn btn-success btn-sm me-2">Accepter</button>
+                                <button onClick={() => handleDecision(app.userId, "reject")} className="btn btn-danger btn-sm">Refuser</button>
                             </div>
                         </li>
                     ))}
