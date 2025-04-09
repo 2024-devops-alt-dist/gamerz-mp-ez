@@ -14,6 +14,7 @@ const version = "v1";
 const path = `/api/${version}`;
 
 import { router as authRouter } from "./routes/auth";
+import { adminRouter } from './routes/admin';
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -38,6 +39,7 @@ app.use(
 
 
 app.use(`${path}/auth`, authRouter);
+app.use(`${path}/admin`, adminRouter);
 
 // Connexion à la base de données et démarrage du serveur
 const connectDB = async () => {

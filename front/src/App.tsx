@@ -6,6 +6,7 @@ import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import {AuthProvider} from "./contexts/AuthContext.tsx";
+import AdminApplications from "./pages/AdminApplications";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                    <Route path="/admin/applications" element={<AdminApplications />} />
                 </Routes>
             </Router>
         </AuthProvider>
