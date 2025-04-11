@@ -13,3 +13,8 @@ adminRouter.post("/applications/:userId/reject", adminController.rejectApplicati
 // Colonne check users inscrits et bannissements
 adminRouter.get("/gamerz", adminController.getGamerzUsers);
 adminRouter.post("/gamerz/:userId/ban", adminController.banUser);
+
+// Topic
+adminRouter.get("/topics", adminController.getAllTopics);
+adminRouter.post("/topics", adminController.createTopic);
+adminRouter.delete("/topics/:topicId", adminController.deleteTopic);

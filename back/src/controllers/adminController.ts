@@ -1,4 +1,5 @@
 import User from "../schemas/User";
+import Topic from "../schemas/Topic";
 import { Request, Response } from "express";
 
 export const adminController = {
@@ -82,5 +83,44 @@ export const adminController = {
         await user.save();
     
         res.json({ message: "User banned successfully" });
-    }
+    },
+
+    async getAllTopics(req: Request, res: Response): Promise<void> {
+        const topics = await Topic.find();
+        res.json(topics);
+    },
+
+    // POST create new topic
+    async createTopic(req: Request, res: Response): Promise<void> {
+        const { name } = req.body;
+
+        if (!name) {
+            res.status(400).json({ error: "Topic name is required" });
+            return;
+        }
+
+        const existing = await Topic.findOne({ name });
+        if (existing) {
+            res.status(400).json({ error: "Topic already exists" });
+            return;
+        }
+
+        const newTopic = new Topic({ name });
+        await newTopic.save();
+
+        res.status(201).json(newTopic);
+    },
+
+    // DELETE a topic
+    async deleteTopic(req: Request, res: Response): Promise<void> {
+        const { topicId } = req.params;
+
+        const deleted = await Topic.findByIdAndDelete(topicId);
+        if (!deleted) {
+            res.status(404).json({ error: "Topic not found" });
+            return;
+        }
+
+        res.json({ message: "Topic deleted successfully" });
+    },
 };
