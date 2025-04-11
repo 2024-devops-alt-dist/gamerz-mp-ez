@@ -53,7 +53,7 @@ function Home() {
                     </div>
                 )}
             </div>
-            <p>Ça marche, bienvenue {user?.username} !</p>
+            {/* <p>Ça marche, bienvenue {user?.username} !</p> */} 
 
             {user && <Chat user={user} />}
         </div>

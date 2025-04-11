@@ -1,10 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { format } from "date-fns";
-
-const socket = io("http://localhost:5000", {
-    withCredentials: true,
-});
 
 type Message = {
     _id?: string;
@@ -16,28 +12,50 @@ type Message = {
     timestamp?: string;
 };
 
-export default function Chat({ user }: { user: { _id: string; username: string } }) {
+type Props = {
+    user: {
+        _id: string;
+        username: string;
+    };
+};
+
+export default function Chat({ user }: Props) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
+    const [socket, setSocket] = useState<Socket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        socket.on("load_messages", (loadedMessages: Message[]) => {
+        // Connect socket only once user is loaded
+        const newSocket = io("http://localhost:5000", {
+            withCredentials: true,
+        });
+
+        newSocket.on("connect", () => {
+            console.log("Connected to socket server");
+        });
+
+        newSocket.on("load_messages", (loadedMessages: Message[]) => {
             setMessages(loadedMessages);
         });
 
-        socket.on("receive_message", (message: Message) => {
+        newSocket.on("receive_message", (message: Message) => {
             setMessages((prev) => [...prev, message]);
         });
 
+        newSocket.on("disconnect", () => {
+            console.log("Disconnected from socket server");
+        });
+
+        setSocket(newSocket);
+
         return () => {
-            socket.off("load_messages");
-            socket.off("receive_message");
+            newSocket.disconnect();
         };
-    }, []);
+    }, [user._id]); // Ensures it runs when user is available
 
     const handleSend = () => {
-        if (newMessage.trim() === "") return;
+        if (newMessage.trim() === "" || !socket) return;
         socket.emit("send_message", {
             sender: user._id,
             content: newMessage,
@@ -51,7 +69,7 @@ export default function Chat({ user }: { user: { _id: string; username: string }
 
     return (
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
-            <h4>💬 Chat Gamerz de haute amplitude</h4>
+            <h4>Chat Gamerz de haute amplitude</h4>
             <div style={{
                 border: "1px solid #ccc",
                 borderRadius: "8px",
@@ -62,11 +80,17 @@ export default function Chat({ user }: { user: { _id: string; username: string }
             }}>
                 {messages.map((msg) => (
                     <div key={msg._id || Math.random()} style={{ marginBottom: "5px" }}>
-                        {format(new Date(msg.timestamp as string), "dd/MM/yyyy HH:mm")} 
-                        <span> - </span><strong>{msg.sender.username}</strong>: {msg.content}
+                        {msg.timestamp && (
+                            <>
+                                <span style={{ color: "#888" }}>
+                                    {format(new Date(msg.timestamp), "dd/MM/yyyy HH:mm")}
+                                </span>
+                                <span> - </span>
+                            </>
+                        )}
+                        <strong>{msg.sender.username}</strong>: {msg.content}
                     </div>
                 ))}
-
                 <div ref={messagesEndRef} />
             </div>
             <div className="input-group mt-2">
