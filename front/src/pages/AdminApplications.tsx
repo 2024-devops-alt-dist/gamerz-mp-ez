@@ -15,9 +15,23 @@ type GamerzUser = {
     email: string;
 };
 
+type RejectedUser = {
+    _id: string;
+    username: string;
+    email: string;
+};
+
+type Topic = {
+    _id: string;
+    name: string;
+};
+
 function AdminDashboard() {
     const [applications, setApplications] = useState<Application[]>([]);
     const [gamerz, setGamerz] = useState<GamerzUser[]>([]);
+    const [rejected, setRejected] = useState<RejectedUser[]>([]);
+    const [topics, setTopics] = useState<Topic[]>([]);
+    const [newTopic, setNewTopic] = useState("");
 
     const fetchApplications = async () => {
         try {
@@ -38,6 +52,29 @@ function AdminDashboard() {
             setGamerz(response.data);
         } catch (error) {
             console.error("Erreur lors du chargement des utilisateurs GAMERZ :", error);
+        }
+    };
+
+    const fetchRejected = async () => {
+        try {
+            const response = await axios.get("http://localhost:5000/api/v1/admin/rejected", {
+                withCredentials: true,
+            });
+            setRejected(response.data);
+        } catch (error) {
+            console.error("Erreur lors du chargement des joueurs rejetés :", error);
+        }
+    };
+
+
+    const fetchTopics = async () => {
+        try {
+            const response = await axios.get("http://localhost:5000/api/v1/admin/topics", {
+                withCredentials: true,
+            });
+            setTopics(response.data);
+        } catch (error) {
+            console.error("Erreur lors du chargement des topics :", error);
         }
     };
 
@@ -64,13 +101,40 @@ function AdminDashboard() {
         }
     };
 
+    const handleCreateTopic = async () => {
+        if (!newTopic.trim()) return;
+
+        try {
+            await axios.post("http://localhost:5000/api/v1/admin/topics", { name: newTopic }, {
+                withCredentials: true
+            });
+            setNewTopic("");
+            fetchTopics();
+        } catch (error) {
+            console.error("Erreur lors de la création du topic :", error);
+        }
+    };
+
+    const handleDeleteTopic = async (topicId: string) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/v1/admin/topics/${topicId}`, {
+                withCredentials: true
+            });
+            fetchTopics();
+        } catch (error) {
+            console.error("Erreur lors de la suppression du topic :", error);
+        }
+    };
+
     useEffect(() => {
         fetchApplications();
         fetchGamerz();
+        fetchTopics();
+        fetchRejected();
     }, []);
 
     return (
-        <div className="container mt-4">
+        <div className="container mt-4 mb-5">
             <div className="row">
                 {/* Pending Applications */}
                 <div className="col-md-6">
@@ -106,6 +170,56 @@ function AdminDashboard() {
                                     <div className="mt-2">
                                         <button onClick={() => handleBan(user._id)} className="btn btn-warning btn-sm">Bannir</button>
                                     </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
+
+            {/* Rejected Users */}
+            <div className="row mt-5">
+                <div className="col-md-6">
+                    <h2>Joueurs rejetés</h2>
+                    {rejected.length === 0 ? (
+                        <p>Aucun joueur rejeté.</p>
+                    ) : (
+                        <ul className="list-group">
+                            {rejected.map((user) => (
+                                <li key={user._id} className="list-group-item">
+                                    <strong>{user.username}</strong> ({user.email})
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
+
+
+            {/* Topic Management */}
+            <div className="row mt-5">
+                <div className="col-12">
+                    <h2>Gestion des topics</h2>
+
+                    <div className="input-group mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Nom du nouveau topic"
+                            value={newTopic}
+                            onChange={(e) => setNewTopic(e.target.value)}
+                        />
+                        <button className="btn btn-primary" onClick={handleCreateTopic}>Créer</button>
+                    </div>
+
+                    {topics.length === 0 ? (
+                        <p>Aucun topic existant.</p>
+                    ) : (
+                        <ul className="list-group">
+                            {topics.map((topic) => (
+                                <li key={topic._id} className="list-group-item d-flex justify-content-between align-items-center">
+                                    {topic.name}
+                                    <button onClick={() => handleDeleteTopic(topic._id)} className="btn btn-danger btn-sm">Supprimer</button>
                                 </li>
                             ))}
                         </ul>
