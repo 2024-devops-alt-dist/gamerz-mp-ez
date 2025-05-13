@@ -16,7 +16,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: "https://gamerz-mp-ez-7jf5.onrender.com",
         methods: ["GET", "POST"],
         credentials: true,
     },
@@ -32,7 +32,7 @@ import { adminRouter } from './routes/admin';
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://gamerz-mp-ez-7jf5.onrender.com',
     credentials: true
 }));
 
@@ -45,8 +45,8 @@ app.use(
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: true,
+            sameSite: "none",
             maxAge: 1000 * 60 * 60, // 1 heure
         },
     })
@@ -122,7 +122,8 @@ const connectDB = async () => {
         await mongoose.connect(process.env.MONGO_URI as string);
         console.log("Connecté à MongoDB");
 
-        server.listen(PORT, () => {
+        // @ts-ignore
+        server.listen(PORT, '0.0.0.0', () => {
             console.log(`Server listening on port ${PORT}`);
         });
     } catch (error) {

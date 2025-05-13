@@ -3,10 +3,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Chat from "../components/Chat";
 
+const apiUri = import.meta.env.VITE_API_URI;
+
 type User = {
     _id: string;
     username: string;
     email: string;
+    roles: [string]
 };
 
 function Home() {
@@ -18,7 +21,7 @@ function Home() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/v1/auth/me", {
+                const response = await axios.get(`${apiUri}/auth/me`, {
                     withCredentials: true,
                 });
                 setUser(response.data);

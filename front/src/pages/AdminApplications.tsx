@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const apiUri = import.meta.env.VITE_API_URI;
+
 type Application = {
     _id: string;
     userId: string;
@@ -35,7 +37,7 @@ function AdminDashboard() {
 
     const fetchApplications = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/v1/admin/applications", {
+            const response = await axios.get(`${apiUri}/admin/applications`, {
                 withCredentials: true,
             });
             setApplications(response.data);
@@ -46,7 +48,7 @@ function AdminDashboard() {
 
     const fetchGamerz = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/v1/admin/gamerz", {
+            const response = await axios.get(`${apiUri}/admin/gamerz`, {
                 withCredentials: true,
             });
             setGamerz(response.data);
@@ -57,7 +59,7 @@ function AdminDashboard() {
 
     const fetchRejected = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/v1/admin/rejected", {
+            const response = await axios.get(`${apiUri}/admin/rejected`, {
                 withCredentials: true,
             });
             setRejected(response.data);
@@ -66,10 +68,9 @@ function AdminDashboard() {
         }
     };
 
-
     const fetchTopics = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/v1/admin/topics", {
+            const response = await axios.get(`${apiUri}/admin/topics`, {
                 withCredentials: true,
             });
             setTopics(response.data);
@@ -80,11 +81,12 @@ function AdminDashboard() {
 
     const handleDecision = async (userId: string, action: "accept" | "reject") => {
         try {
-            await axios.post(`http://localhost:5000/api/v1/admin/applications/${userId}/${action}`, {}, {
+            await axios.post(`${apiUri}/admin/applications/${userId}/${action}`, {}, {
                 withCredentials: true
             });
             fetchApplications();
             fetchGamerz();
+            fetchRejected();
         } catch (error) {
             console.error(`Erreur lors de la ${action} de la candidature :`, error);
         }
@@ -92,7 +94,7 @@ function AdminDashboard() {
 
     const handleBan = async (userId: string) => {
         try {
-            await axios.post(`http://localhost:5000/api/v1/admin/gamerz/${userId}/ban`, {}, {
+            await axios.post(`${apiUri}/admin/gamerz/${userId}/ban`, {}, {
                 withCredentials: true
             });
             fetchGamerz();
@@ -105,7 +107,7 @@ function AdminDashboard() {
         if (!newTopic.trim()) return;
 
         try {
-            await axios.post("http://localhost:5000/api/v1/admin/topics", { name: newTopic }, {
+            await axios.post(`${apiUri}/admin/topics`, { name: newTopic }, {
                 withCredentials: true
             });
             setNewTopic("");
@@ -117,7 +119,7 @@ function AdminDashboard() {
 
     const handleDeleteTopic = async (topicId: string) => {
         try {
-            await axios.delete(`http://localhost:5000/api/v1/admin/topics/${topicId}`, {
+            await axios.delete(`${apiUri}/admin/topics/${topicId}`, {
                 withCredentials: true
             });
             fetchTopics();
@@ -194,7 +196,6 @@ function AdminDashboard() {
                     )}
                 </div>
             </div>
-
 
             {/* Topic Management */}
             <div className="row mt-5">

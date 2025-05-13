@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { format } from "date-fns";
 
+const backendUri = import.meta.env.VITE_BACKEND_URI;
+
 type Message = {
     _id?: string;
     sender: {
@@ -29,7 +31,7 @@ export default function Chat({ user }: Props) {
 
     useEffect(() => {
         // Connect socket only once a user is loaded
-        const newSocket = io("http://localhost:5000", {
+        const newSocket = io(`${backendUri}`, {
             withCredentials: true,
         });
 

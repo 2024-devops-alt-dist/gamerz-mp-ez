@@ -67,8 +67,8 @@ export const authController = {
             // Send token in a cookie
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
+                secure: true,
+                sameSite: "none",
             });
 
             res.status(200).json({ message: "Connexion réussie !" });
@@ -94,8 +94,8 @@ export const authController = {
     logout: (req: Request, res: Response): void => {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: true,
+            sameSite: "none",
         });
 
         res.status(200).json({ message: "Déconnexion réussie." });
