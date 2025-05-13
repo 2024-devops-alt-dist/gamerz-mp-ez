@@ -16,6 +16,7 @@ type Props = {
     user: {
         _id: string;
         username: string;
+        roles: string[];
     };
 };
 
@@ -24,9 +25,10 @@ export default function Chat({ user }: Props) {
     const [newMessage, setNewMessage] = useState("");
     const [socket, setSocket] = useState<Socket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const hasGamerzRole = user?.roles?.includes("ROLE_GAMERZ");
 
     useEffect(() => {
-        // Connect socket only once user is loaded
+        // Connect socket only once a user is loaded
         const newSocket = io("http://localhost:5000", {
             withCredentials: true,
         });
@@ -55,7 +57,7 @@ export default function Chat({ user }: Props) {
     }, [user._id]); // Ensures it runs when user is available
 
     const handleSend = () => {
-        if (newMessage.trim() === "" || !socket) return;
+        if (newMessage.trim() === "" || !socket || !hasGamerzRole) return;
         socket.emit("send_message", {
             sender: user._id,
             content: newMessage,
@@ -68,7 +70,7 @@ export default function Chat({ user }: Props) {
     }, [messages]);
 
     return (
-        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
+        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1rem" }}>
             <h4>Chat Gamerz de haute amplitude</h4>
             <div style={{
                 border: "1px solid #ccc",
@@ -93,6 +95,13 @@ export default function Chat({ user }: Props) {
                 ))}
                 <div ref={messagesEndRef} />
             </div>
+
+            {!hasGamerzRole && (
+                <div className="text-danger mt-2">
+                    Seuls les utilisateurs <strong>acceptés</strong> peuvent envoyer des messages.
+                </div>
+            )}
+
             <div className="input-group mt-2">
                 <input
                     type="text"
@@ -101,8 +110,13 @@ export default function Chat({ user }: Props) {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Écris ton message..."
                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                    disabled={!hasGamerzRole}
                 />
-                <button className="btn btn-primary" onClick={handleSend}>
+                <button
+                    className="btn btn-primary"
+                    onClick={handleSend}
+                    disabled={!hasGamerzRole}
+                >
                     Envoyer
                 </button>
             </div>

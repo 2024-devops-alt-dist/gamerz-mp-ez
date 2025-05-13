@@ -15,6 +15,12 @@ type GamerzUser = {
     email: string;
 };
 
+type RejectedUser = {
+    _id: string;
+    username: string;
+    email: string;
+};
+
 type Topic = {
     _id: string;
     name: string;
@@ -23,6 +29,7 @@ type Topic = {
 function AdminDashboard() {
     const [applications, setApplications] = useState<Application[]>([]);
     const [gamerz, setGamerz] = useState<GamerzUser[]>([]);
+    const [rejected, setRejected] = useState<RejectedUser[]>([]);
     const [topics, setTopics] = useState<Topic[]>([]);
     const [newTopic, setNewTopic] = useState("");
 
@@ -47,6 +54,18 @@ function AdminDashboard() {
             console.error("Erreur lors du chargement des utilisateurs GAMERZ :", error);
         }
     };
+
+    const fetchRejected = async () => {
+        try {
+            const response = await axios.get("http://localhost:5000/api/v1/admin/rejected", {
+                withCredentials: true,
+            });
+            setRejected(response.data);
+        } catch (error) {
+            console.error("Erreur lors du chargement des joueurs rejetés :", error);
+        }
+    };
+
 
     const fetchTopics = async () => {
         try {
@@ -111,10 +130,11 @@ function AdminDashboard() {
         fetchApplications();
         fetchGamerz();
         fetchTopics();
+        fetchRejected();
     }, []);
 
     return (
-        <div className="container mt-4">
+        <div className="container mt-4 mb-5">
             <div className="row">
                 {/* Pending Applications */}
                 <div className="col-md-6">
@@ -156,6 +176,25 @@ function AdminDashboard() {
                     )}
                 </div>
             </div>
+
+            {/* Rejected Users */}
+            <div className="row mt-5">
+                <div className="col-md-6">
+                    <h2>Joueurs rejetés</h2>
+                    {rejected.length === 0 ? (
+                        <p>Aucun joueur rejeté.</p>
+                    ) : (
+                        <ul className="list-group">
+                            {rejected.map((user) => (
+                                <li key={user._id} className="list-group-item">
+                                    <strong>{user.username}</strong> ({user.email})
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
+
 
             {/* Topic Management */}
             <div className="row mt-5">

@@ -46,6 +46,7 @@ function Header() {
                                 {user.roles?.includes("ROLE_ADMIN") && (
                                     <NavLink to="/admin/applications" className="nav-link text-light">Dashboard</NavLink>
                                 )}
+                                <NavLink to="/home" className="nav-link text-light">Chat</NavLink>
                                 <button className="btn btn-link nav-link text-light" onClick={handleLogout}>
                                     Déconnexion de <span>{user.username}</span>
                                 </button>

@@ -69,7 +69,10 @@ export const adminController = {
         const users = await User.find({ roles: "ROLE_GAMERZ" }).select("username email _id");
         res.json(users);
     },
-    
+    async getRejectedUsers(req: Request, res: Response): Promise<void> {
+        const users = await User.find({ roles: "ROLE_REJECTED" }).select("username email _id");
+        res.json(users);
+    },
     async banUser(req: Request, res: Response): Promise<void> {
         const { userId } = req.params;
     
